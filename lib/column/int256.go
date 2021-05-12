@@ -15,6 +15,9 @@ func (Int256) Read(decoder *binary.Decoder, isNull bool) (interface{}, error) {
 func (i *Int256) Write(encoder *binary.Encoder, v interface{}) error {
 	switch v := v.(type) {
 	case []byte:
+		for i := 0; i < len(v)/2; i++ {
+			v[i], v[len(v)-i-1] = v[len(v)-i-1], v[i]
+		}
 		if _, err := encoder.Write(v); err != nil {
 			return err
 		}
