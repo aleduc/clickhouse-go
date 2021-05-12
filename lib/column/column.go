@@ -56,7 +56,7 @@ func Factory(name, chType string, timezone *time.Location) (Column, error) {
 	case "Int256":
 		return &Int256{
 			base: base{
-				name, name,
+				name:    name,
 				chType:  chType,
 				valueOf: columnBaseTypes[Int256{}],
 			},
