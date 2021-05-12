@@ -19,6 +19,11 @@ func (i *Int256) Write(encoder *binary.Encoder, v interface{}) error {
 			return err
 		}
 		return nil
+	case string:
+		if err := encoder.RawString([]byte(v)); err != nil {
+			return err
+		}
+		return nil
 	}
 
 	return &ErrUnexpectedType{
