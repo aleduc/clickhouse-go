@@ -46,6 +46,7 @@ type ColumnWriter interface {
 	WriteFixedString(c int, v []byte) error
 	WriteFixedStringNullable(c int, v *[]byte) error
 	WriteInt256(c int, v []byte) error
+	WriteUInt256(c int, v []byte) error
 }
 
 func OpenDirect(dsn string) (Clickhouse, error) {

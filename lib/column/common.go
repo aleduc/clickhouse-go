@@ -32,6 +32,7 @@ var columnBaseTypes = map[interface{}]reflect.Value{
 	IPv4{}:      reflect.ValueOf(net.IPv4zero),
 	IPv6{}:      reflect.ValueOf(net.IPv6unspecified),
 	Int256{}:    reflect.ValueOf(Int256{}),
+	UInt256{}:   reflect.ValueOf(UInt256{}),
 }
 
 var arrayBaseTypes = map[interface{}]reflect.Type{
@@ -50,6 +51,7 @@ var arrayBaseTypes = map[interface{}]reflect.Type{
 	IPv4{}:      reflect.ValueOf(net.IPv4zero).Type(),
 	IPv6{}:      reflect.ValueOf(net.IPv6unspecified).Type(),
 	Int256{}:    reflect.ValueOf(Int256{}).Type(),
+	UInt256{}:   reflect.ValueOf(UInt256{}).Type(),
 }
 
 type base struct {
