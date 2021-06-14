@@ -3,6 +3,7 @@ package column
 import (
 	"errors"
 	"fmt"
+	"math/big"
 	"net"
 	"reflect"
 	"strings"
@@ -165,6 +166,8 @@ loop:
 		scanType = []uint32{}
 	case arrayBaseTypes[uint64(0)]:
 		scanType = []uint64{}
+	case arrayBaseTypes[UInt256{}]:
+		scanType = []*big.Int{}
 	case arrayBaseTypes[float32(0)]:
 		scanType = []float32{}
 	case arrayBaseTypes[float64(0)]:

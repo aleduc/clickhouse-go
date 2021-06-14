@@ -3,6 +3,7 @@ package clickhouse_test
 import (
 	"database/sql/driver"
 	"fmt"
+	"math/big"
 
 	//	"fmt"
 	"net"
@@ -247,6 +248,52 @@ func Test_DirectArrayT(t *testing.T) {
 							clickhouse.Array([]string{"c", "d"}),
 							clickhouse.Array([]string{"1.2.3.4", "2.2.3.4"}),
 							clickhouse.Array([]string{"2001:0db8:85a3:0000:0000:8a2e:0370:7334"}),
+						})
+						if !assert.NoError(t, err) {
+							return
+						}
+					}
+					assert.NoError(t, tx.Commit())
+				}
+			}
+		}
+	}
+}
+
+func Test_DirectArray256(t *testing.T) {
+	const (
+		ddl = `
+			CREATE TABLE clickhouse_test_array256 (
+				uint256     Array(UInt256)
+			) Engine=Memory
+		`
+		dml = `INSERT INTO clickhouse_test_array256 (uint256) VALUES (?)`
+	)
+
+	if connect, err := clickhouse.Open("tcp://127.0.0.1:9000?debug=true"); assert.NoError(t, err) {
+		{
+			var (
+				tx, _   = connect.Begin()
+				stmt, _ = connect.Prepare("DROP TABLE IF EXISTS clickhouse_test_array256")
+			)
+			stmt.Exec([]driver.Value{})
+			tx.Commit()
+		}
+		{
+			if tx, err := connect.Begin(); assert.NoError(t, err) {
+				if stmt, err := connect.Prepare(ddl); assert.NoError(t, err) {
+					if _, err := stmt.Exec([]driver.Value{}); assert.NoError(t, err) {
+						assert.NoError(t, tx.Commit())
+					}
+				}
+			}
+		}
+		{
+			if tx, err := connect.Begin(); assert.NoError(t, err) {
+				if stmt, err := connect.Prepare(dml); assert.NoError(t, err) {
+					for i := 0; i < 100; i++ {
+						_, err := stmt.Exec([]driver.Value{
+							clickhouse.Array([]*big.Int{big.NewInt(1), big.NewInt(2), big.NewInt(3)}),
 						})
 						if !assert.NoError(t, err) {
 							return

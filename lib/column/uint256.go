@@ -10,7 +10,7 @@ import (
 type UInt256 struct{ base }
 
 func ubigIntToLEBytes(val *big.Int) []byte {
-	var r []byte
+	r := val.Bytes()
 
 	res := bytes.NewBuffer([]byte{})
 	for i := 0; i < 32-len(r); i++ {

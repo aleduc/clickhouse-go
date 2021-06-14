@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"database/sql/driver"
 	"fmt"
+	"math/big"
 	"net"
 	"reflect"
 	"strings"
@@ -735,6 +736,63 @@ func Test_ArrayT(t *testing.T) {
 								)
 							}
 							assert.Equal(t, int(20), count)
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+func Test_Array256(t *testing.T) {
+	const (
+		ddl = `
+			CREATE TABLE clickhouse_test_array256 (
+				uint256     Array(UInt256)
+			) Engine=Memory
+		`
+		dml   = `INSERT INTO clickhouse_test_array256 (uint256) VALUES (?)`
+		query = `
+			SELECT
+				uint256
+			FROM clickhouse_test_array256
+		`
+	)
+	if connect, err := sql.Open("clickhouse", "tcp://127.0.0.1:9000?debug=true"); assert.NoError(t, err) && assert.NoError(t, connect.Ping()) {
+		if _, err := connect.Exec("DROP TABLE IF EXISTS clickhouse_test_array256"); assert.NoError(t, err) {
+			if _, err := connect.Exec(ddl); assert.NoError(t, err) {
+				if tx, err := connect.Begin(); assert.NoError(t, err) {
+					if stmt, err := tx.Prepare(dml); assert.NoError(t, err) {
+						for i := 1; i <= 10; i++ {
+							_, err = stmt.Exec(
+								[]*big.Int{big.NewInt(1), big.NewInt(2), big.NewInt(3)},
+							)
+							if !assert.NoError(t, err) {
+								return
+							}
+							_, err = stmt.Exec(
+								[]*big.Int{big.NewInt(100), big.NewInt(101), big.NewInt(102), big.NewInt(103)},
+							)
+							if !assert.NoError(t, err) {
+								return
+							}
+						}
+					}
+					if assert.NoError(t, tx.Commit()) {
+						var item struct {
+							UInt256 []*big.Int
+						}
+						if rows, err := connect.Query(query); assert.NoError(t, err) {
+							var count int
+							for rows.Next() {
+								count++
+								err := rows.Scan(&item.UInt256)
+								if !assert.NoError(t, err) {
+									return
+								}
+								t.Logf("UInt256=%v", item.UInt256)
+							}
+							assert.Equal(t, 20, count)
 						}
 					}
 				}
