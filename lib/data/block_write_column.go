@@ -18,14 +18,26 @@ func (block *Block) WriteDate(c int, v time.Time) error {
 }
 
 func (block *Block) WriteDateNullable(c int, v *time.Time) error {
-	if v == nil {
-		return block.buffers[c].Column.UInt16Nullable(nil)
+	if err := block.buffers[c].Offset.Bool(v == nil); err != nil {
+		return err
 	}
-	unixTime := uint16((*v).Unix() / 24 / 3600)
-	return block.buffers[c].Column.UInt16Nullable(&unixTime)
+	if v == nil {
+		return block.buffers[c].Column.UInt16(0)
+	}
+	return block.WriteDate(c, *v)
 }
 
 func (block *Block) WriteDateTime(c int, v time.Time) error {
+	return block.buffers[c].Column.UInt32(uint32(v.Unix()))
+}
+
+func (block *Block) WriteDateTimeNullable(c int, v *time.Time) error {
+	if err := block.buffers[c].Offset.Bool(v == nil); err != nil {
+		return err
+	}
+	if v == nil {
+		return block.buffers[c].Column.UInt32(0)
+	}
 	return block.buffers[c].Column.UInt32(uint32(v.Unix()))
 }
 
@@ -36,12 +48,14 @@ func (block *Block) WriteBool(c int, v bool) error {
 	return block.buffers[c].Column.UInt8(0)
 }
 
-func (block *Block) WriteDateTimeNullable(c int, v *time.Time) error {
-	if v == nil {
-		return block.buffers[c].Column.UInt32Nullable(nil)
+func (block *Block) WriteBoolNullable(c int, v *bool) error {
+	if err := block.buffers[c].Offset.Bool(v == nil); err != nil {
+		return err
 	}
-	unixTime := uint32((*v).Unix())
-	return block.buffers[c].Column.UInt32Nullable(&unixTime)
+	if v == nil || !(*v) {
+		return block.buffers[c].Column.UInt8(0)
+	}
+	return block.buffers[c].Column.UInt8(1)
 }
 
 func (block *Block) WriteInt8(c int, v int8) error {
@@ -49,7 +63,13 @@ func (block *Block) WriteInt8(c int, v int8) error {
 }
 
 func (block *Block) WriteInt8Nullable(c int, v *int8) error {
-	return block.buffers[c].Column.Int8Nullable(v)
+	if err := block.buffers[c].Offset.Bool(v == nil); err != nil {
+		return err
+	}
+	if v == nil {
+		return block.buffers[c].Column.Int8(0)
+	}
+	return block.buffers[c].Column.Int8(*v)
 }
 
 func (block *Block) WriteInt16(c int, v int16) error {
@@ -57,7 +77,13 @@ func (block *Block) WriteInt16(c int, v int16) error {
 }
 
 func (block *Block) WriteInt16Nullable(c int, v *int16) error {
-	return block.buffers[c].Column.Int16Nullable(v)
+	if err := block.buffers[c].Offset.Bool(v == nil); err != nil {
+		return err
+	}
+	if v == nil {
+		return block.buffers[c].Column.Int16(0)
+	}
+	return block.buffers[c].Column.Int16(*v)
 }
 
 func (block *Block) WriteInt32(c int, v int32) error {
@@ -65,7 +91,13 @@ func (block *Block) WriteInt32(c int, v int32) error {
 }
 
 func (block *Block) WriteInt32Nullable(c int, v *int32) error {
-	return block.buffers[c].Column.Int32Nullable(v)
+	if err := block.buffers[c].Offset.Bool(v == nil); err != nil {
+		return err
+	}
+	if v == nil {
+		return block.buffers[c].Column.Int32(0)
+	}
+	return block.buffers[c].Column.Int32(*v)
 }
 
 func (block *Block) WriteInt64(c int, v int64) error {
@@ -81,7 +113,13 @@ func (block *Block) WriteUInt256(c int, v []byte) error {
 }
 
 func (block *Block) WriteInt64Nullable(c int, v *int64) error {
-	return block.buffers[c].Column.Int64Nullable(v)
+	if err := block.buffers[c].Offset.Bool(v == nil); err != nil {
+		return err
+	}
+	if v == nil {
+		return block.buffers[c].Column.Int64(0)
+	}
+	return block.buffers[c].Column.Int64(*v)
 }
 
 func (block *Block) WriteUInt8(c int, v uint8) error {
@@ -89,7 +127,13 @@ func (block *Block) WriteUInt8(c int, v uint8) error {
 }
 
 func (block *Block) WriteUInt8Nullable(c int, v *uint8) error {
-	return block.buffers[c].Column.UInt8Nullable(v)
+	if err := block.buffers[c].Offset.Bool(v == nil); err != nil {
+		return err
+	}
+	if v == nil {
+		return block.buffers[c].Column.UInt8(0)
+	}
+	return block.buffers[c].Column.UInt8(*v)
 }
 
 func (block *Block) WriteUInt16(c int, v uint16) error {
@@ -97,7 +141,13 @@ func (block *Block) WriteUInt16(c int, v uint16) error {
 }
 
 func (block *Block) WriteUInt16Nullable(c int, v *uint16) error {
-	return block.buffers[c].Column.UInt16Nullable(v)
+	if err := block.buffers[c].Offset.Bool(v == nil); err != nil {
+		return err
+	}
+	if v == nil {
+		return block.buffers[c].Column.UInt16(0)
+	}
+	return block.buffers[c].Column.UInt16(*v)
 }
 
 func (block *Block) WriteUInt32(c int, v uint32) error {
@@ -105,7 +155,13 @@ func (block *Block) WriteUInt32(c int, v uint32) error {
 }
 
 func (block *Block) WriteUInt32Nullable(c int, v *uint32) error {
-	return block.buffers[c].Column.UInt32Nullable(v)
+	if err := block.buffers[c].Offset.Bool(v == nil); err != nil {
+		return err
+	}
+	if v == nil {
+		return block.buffers[c].Column.UInt32(0)
+	}
+	return block.buffers[c].Column.UInt32(*v)
 }
 
 func (block *Block) WriteUInt64(c int, v uint64) error {
@@ -113,7 +169,13 @@ func (block *Block) WriteUInt64(c int, v uint64) error {
 }
 
 func (block *Block) WriteUInt64Nullable(c int, v *uint64) error {
-	return block.buffers[c].Column.UInt64Nullable(v)
+	if err := block.buffers[c].Offset.Bool(v == nil); err != nil {
+		return err
+	}
+	if v == nil {
+		return block.buffers[c].Column.UInt64(0)
+	}
+	return block.buffers[c].Column.UInt64(*v)
 }
 
 func (block *Block) WriteFloat32(c int, v float32) error {
@@ -121,7 +183,13 @@ func (block *Block) WriteFloat32(c int, v float32) error {
 }
 
 func (block *Block) WriteFloat32Nullable(c int, v *float32) error {
-	return block.buffers[c].Column.Float32Nullable(v)
+	if err := block.buffers[c].Offset.Bool(v == nil); err != nil {
+		return err
+	}
+	if v == nil {
+		return block.buffers[c].Column.Float32(0)
+	}
+	return block.buffers[c].Column.Float32(*v)
 }
 
 func (block *Block) WriteFloat64(c int, v float64) error {
@@ -129,7 +197,13 @@ func (block *Block) WriteFloat64(c int, v float64) error {
 }
 
 func (block *Block) WriteFloat64Nullable(c int, v *float64) error {
-	return block.buffers[c].Column.Float64Nullable(v)
+	if err := block.buffers[c].Offset.Bool(v == nil); err != nil {
+		return err
+	}
+	if v == nil {
+		return block.buffers[c].Column.Float64(0)
+	}
+	return block.buffers[c].Column.Float64(*v)
 }
 
 func (block *Block) WriteBytes(c int, v []byte) error {
@@ -143,11 +217,10 @@ func (block *Block) WriteBytes(c int, v []byte) error {
 }
 
 func (block *Block) WriteBytesNullable(c int, v *[]byte) error {
-	isNil := v == nil
-	if err := block.buffers[c].Column.Nullable(isNil); err != nil {
+	if err := block.buffers[c].Offset.Bool(v == nil); err != nil {
 		return err
 	}
-	if isNil {
+	if v == nil {
 		return block.WriteBytes(c, []byte{})
 	}
 	return block.WriteBytes(c, *v)
@@ -164,11 +237,10 @@ func (block *Block) WriteString(c int, v string) error {
 }
 
 func (block *Block) WriteStringNullable(c int, v *string) error {
-	isNil := v == nil
-	if err := block.buffers[c].Column.Nullable(isNil); err != nil {
+	if err := block.buffers[c].Offset.Bool(v == nil); err != nil {
 		return err
 	}
-	if isNil {
+	if v == nil {
 		return block.WriteString(c, "")
 	}
 	return block.WriteString(c, *v)
@@ -178,8 +250,18 @@ func (block *Block) WriteFixedString(c int, v []byte) error {
 	return block.Columns[c].Write(block.buffers[c].Column, v)
 }
 
+func (block *Block) WriteFixedStringNullable(c int, v *[]byte) error {
+	writer := block.Columns[c].(*column.Nullable)
+	return writer.WriteNull(block.buffers[c].Offset, block.buffers[c].Column, v)
+}
+
 func (block *Block) WriteIP(c int, v net.IP) error {
 	return block.Columns[c].Write(block.buffers[c].Column, v)
+}
+
+func (block *Block) WriteIPNullable(c int, v net.IP) error {
+	writer := block.Columns[c].(*column.Nullable)
+	return writer.WriteNull(block.buffers[c].Offset, block.buffers[c].Column, v)
 }
 
 func (block *Block) WriteArray(c int, v interface{}) error {
@@ -193,13 +275,8 @@ func (block *Block) WriteArrayWithValue(c int, value Value) error {
 	return block.writeArray(block.Columns[c], value, c, 1)
 }
 
-func (block *Block) WriteFixedStringNullable(c int, v *[]byte) error {
-	writer := block.Columns[c].(*column.Nullable)
-	return writer.WriteNull(block.buffers[c].Offset, block.buffers[c].Column, v)
-}
-
 func (block *Block) WriteArrayNullable(c int, v *interface{}) error {
-	if err := block.buffers[c].Column.Nullable(v == nil); err != nil {
+	if err := block.buffers[c].Offset.Bool(v == nil); err != nil {
 		return err
 	}
 	if v == nil {
