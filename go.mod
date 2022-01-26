@@ -3,6 +3,7 @@ module github.com/HarmlessEvil/clickhouse-go
 go 1.12
 
 require (
+	github.com/ClickHouse/clickhouse-go v1.5.2
 	github.com/bkaradzic/go-lz4 v1.0.0
 	github.com/cloudflare/golz4 v0.0.0-20150217214814-ef862a3cdc58
 	github.com/davecgh/go-spew v1.1.1 // indirect
