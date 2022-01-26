@@ -1,4 +1,4 @@
-module github.com/HarmlessEvil/clickhouse-go
+module github.com/yakud/clickhouse-go
 
 go 1.12
 
