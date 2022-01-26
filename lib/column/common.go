@@ -2,6 +2,7 @@ package column
 
 import (
 	"fmt"
+	"math/big"
 	"net"
 	"reflect"
 	"time"
@@ -31,6 +32,8 @@ var columnBaseTypes = map[interface{}]reflect.Value{
 	time.Time{}: reflect.ValueOf(time.Time{}),
 	IPv4{}:      reflect.ValueOf(net.IPv4zero),
 	IPv6{}:      reflect.ValueOf(net.IPv6unspecified),
+	Int256{}:    reflect.ValueOf(Int256{}),
+	UInt256{}:   reflect.ValueOf(&big.Int{}),
 }
 
 type ptrTo uint8
@@ -67,6 +70,8 @@ var arrayBaseTypes = map[interface{}]reflect.Type{
 	time.Time{}: reflect.ValueOf(time.Time{}).Type(),
 	IPv4{}:      reflect.ValueOf(net.IPv4zero).Type(),
 	IPv6{}:      reflect.ValueOf(net.IPv6unspecified).Type(),
+	Int256{}:    reflect.ValueOf(Int256{}).Type(),
+	UInt256{}:   reflect.ValueOf(&big.Int{}).Type(),
 
 	// nullable
 	ptrInt8T:   reflect.PtrTo(reflect.ValueOf(int8(0)).Type()),

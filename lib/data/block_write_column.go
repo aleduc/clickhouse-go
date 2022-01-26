@@ -2,10 +2,11 @@ package data
 
 import (
 	"fmt"
-	"github.com/ClickHouse/clickhouse-go/lib/column"
 	"net"
 	"reflect"
 	"time"
+
+	"github.com/ClickHouse/clickhouse-go/lib/column"
 
 	"github.com/ClickHouse/clickhouse-go/lib/binary"
 )
@@ -101,6 +102,14 @@ func (block *Block) WriteInt32Nullable(c int, v *int32) error {
 
 func (block *Block) WriteInt64(c int, v int64) error {
 	return block.buffers[c].Column.Int64(v)
+}
+
+func (block *Block) WriteInt256(c int, v []byte) error {
+	return block.Columns[c].Write(block.buffers[c].Column, v)
+}
+
+func (block *Block) WriteUInt256(c int, v []byte) error {
+	return block.Columns[c].Write(block.buffers[c].Column, v)
 }
 
 func (block *Block) WriteInt64Nullable(c int, v *int64) error {

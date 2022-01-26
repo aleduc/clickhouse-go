@@ -53,12 +53,28 @@ func Factory(name, chType string, timezone *time.Location) (Column, error) {
 				valueOf: columnBaseTypes[int64(0)],
 			},
 		}, nil
+	case "Int256":
+		return &Int256{
+			base: base{
+				name:    name,
+				chType:  chType,
+				valueOf: columnBaseTypes[Int256{}],
+			},
+		}, nil
 	case "UInt8":
 		return &UInt8{
 			base: base{
 				name:    name,
 				chType:  chType,
 				valueOf: columnBaseTypes[uint8(0)],
+			},
+		}, nil
+	case "UInt256":
+		return &UInt256{
+			base: base{
+				name:    name,
+				chType:  chType,
+				valueOf: columnBaseTypes[UInt256{}],
 			},
 		}, nil
 	case "UInt16":

@@ -175,3 +175,10 @@ func (decoder *Decoder) ReadByte() (byte, error) {
 type FixedReader interface {
 	Fixed(ln int) ([]byte, error)
 }
+
+func (decoder *Decoder) Int256() ([]byte, error) {
+	if _, err := decoder.Get().Read(decoder.scratch[:]); err != nil {
+		return []byte{}, err
+	}
+	return decoder.scratch[:], nil
+}
